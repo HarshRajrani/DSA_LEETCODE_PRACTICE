@@ -9,6 +9,11 @@ public:
         while(l <= h){
             int mid = l + (h-l )/2 ;
 
+            if(nums[l] <= nums[h]){
+                ans = min(ans , nums[l] );
+                break ;
+            }
+
             if(nums[l] <= nums[mid]){
                ans = min(ans , nums[l]) ;
                l = mid +1 ;  
