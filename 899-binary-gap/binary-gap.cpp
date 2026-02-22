@@ -3,17 +3,17 @@ public:
     int binaryGap(int n) {
         int prev = -1;         
         int maxGap = 0;       
-        int index = 0; 
+      //  int index = 0; 
 
-        while (n > 0) {
+        for(int i = 0 ; i< 32 ; i++){
             if (n & 1) {     
                 if (prev != -1) {
-                    maxGap = max(maxGap, index - prev);
+                    maxGap = max(maxGap, i - prev);
                 }
-                prev = index;
+                prev = i;
             }
             n >>= 1;         
-            ++index;
+           // ++index;
         }
         return maxGap;
     }
