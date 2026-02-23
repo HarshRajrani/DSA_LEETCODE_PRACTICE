@@ -5,7 +5,7 @@ public:
 
         
         int n = s.size() ;
-        int count = 1<<k  ;// pow(2,k) ;
+        int count = pow(2,k) ;
 
         for(int i =  k ; i<= n ; i++){
             string sub = s.substr(i-k , k) ;
