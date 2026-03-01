@@ -5,9 +5,7 @@ public:
         for(char c : n){
             int number = c - '0' ;
 
-            if(number > maxi){
-                maxi = number ; 
-            }
+           maxi = max(maxi , number ) ;
         }
         return maxi ;
     }
