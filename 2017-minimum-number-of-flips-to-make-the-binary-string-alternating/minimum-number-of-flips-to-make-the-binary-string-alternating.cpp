@@ -2,7 +2,6 @@ class Solution {
 public:
     int minFlips(string s) {
         int n = s.size();
-        s += s;
 
         string s1, s2;
 
@@ -16,15 +15,19 @@ public:
         int result = INT_MAX;
 
         while(j < 2*n) {
-
+            
             // expand window
-            if(s[j] != s1[j]) result1++;
-            if(s[j] != s2[j]) result2++;
+            if(s[j%n] != s1[j]) 
+                result1++;
+            if(s[j%n] != s2[j]) 
+                result2++;
 
             // shrink if window exceeds n
             if(j - i + 1 > n) {
-                if(s[i] != s1[i]) result1--;
-                if(s[i] != s2[i]) result2--;
+                if(s[i%n] != s1[i]) 
+                    result1--;
+                if(s[i%n] != s2[i]) 
+                    result2--;
                 i++;
             }
 
