@@ -20,7 +20,7 @@ public:
             solve(n, curr, count, k, result);
 
             // If result is found, exit early
-            if (!result.empty()) return;
+           // if (!result.empty()) return;
 
             // Undo
             curr.pop_back();
