@@ -3,26 +3,30 @@ public:
     int largestSubmatrix(vector<vector<int>>& matrix) {
         int m = matrix.size();
         int n = matrix[0].size();
+        vector<int> prevRow(n, 0);
         int result = 0;
 
         for (int row = 0; row < m; row++) {
+            vector<int> currRow = matrix[row];
 
             for (int col = 0; col < n; col++) {
 
-                if (matrix[row][col] == 1 && row > 0) {
-                    matrix[row][col] += matrix[row - 1][col];
+                if (currRow[col] == 1) {
+                    currRow[col] += prevRow[col];
                 }
             }
 
-            vector<int> currRow = matrix[row];
-            sort(begin(currRow), end(currRow), greater<int>());
+            vector<int> sortedRow = currRow;
+            sort(begin(sortedRow), end(sortedRow), greater<int>());
+
             for (int col = 0; col < n; col++) {
-                int base = (col + 1); // iske peeche k columns me >=
-                                      // currRow[col] to hoga hi 1s
-                int height = currRow[col];
+                int base = (col + 1);
+                int height = sortedRow[col];
 
                 result = max(result, base * height);
             }
+
+            prevRow = currRow;
         }
 
         return result;
