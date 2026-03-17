@@ -3,32 +3,38 @@ public:
     int largestSubmatrix(vector<vector<int>>& matrix) {
         int m = matrix.size();
         int n = matrix[0].size();
-        vector<int> prevRow(n, 0);
+        vector<pair<int,int>> prevHeights;
         int result = 0;
 
         for (int row = 0; row < m; row++) {
-            vector<int> currRow = matrix[row];
+            vector<pair<int,int>> heights;
+            vector<bool> seen = vector<bool>(n, false);
 
-            for (int col = 0; col < n; col++) {
-
-                if (currRow[col] == 1) {
-                    currRow[col] += prevRow[col];
+            for (auto [height, col] : prevHeights) {
+                if (matrix[row][col] == 1) {
+                    heights.push_back({height + 1, col});
+                    seen[col] = true;
                 }
             }
 
-            vector<int> sortedRow = currRow;
-            sort(begin(sortedRow), end(sortedRow), greater<int>());
-
             for (int col = 0; col < n; col++) {
-                int base = (col + 1);
-                int height = sortedRow[col];
-
-                result = max(result, base * height);
+                if (seen[col] == false && matrix[row][col] == 1) {
+                    heights.push_back({1, col});
+                }
             }
 
-            prevRow = currRow;
+            for (int i = 0; i < heights.size(); i++) {
+                int base   = (i+1);
+                int height = heights[i].first;
+                result = max(result, base*height);
+            }
+
+            prevHeights = heights;
         }
 
         return result;
     }
 };
+
+
+
