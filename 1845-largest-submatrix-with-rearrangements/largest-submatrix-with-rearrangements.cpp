@@ -3,11 +3,11 @@ public:
     int largestSubmatrix(vector<vector<int>>& matrix) {
         int m = matrix.size();
         int n = matrix[0].size();
-        vector<pair<int,int>> prevHeights;
+        vector<pair<int, int>> prevHeights;
         int result = 0;
 
         for (int row = 0; row < m; row++) {
-            vector<pair<int,int>> heights;
+            vector<pair<int, int>> heights;
             vector<bool> seen = vector<bool>(n, false);
 
             for (auto [height, col] : prevHeights) {
@@ -24,9 +24,9 @@ public:
             }
 
             for (int i = 0; i < heights.size(); i++) {
-                int base   = (i+1);
+                int base = (i + 1);
                 int height = heights[i].first;
-                result = max(result, base*height);
+                result = max(result, base * height);
             }
 
             prevHeights = heights;
@@ -35,6 +35,3 @@ public:
         return result;
     }
 };
-
-
-
