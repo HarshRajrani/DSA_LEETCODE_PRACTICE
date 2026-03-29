@@ -1,7 +1,7 @@
 class Solution {
 public:
     bool canBeEqual(string s1, string s2) {
-        int n = s2.size();
+       
         if(s1 == s2) return true ;
 
         if (s1 != s2) {
