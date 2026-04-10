@@ -1,42 +1,51 @@
 class MinStack {
-    private: stack <pair<int , int >> st ;
-public:
-    MinStack() {
-        
-    }
-    
-    void push(int value) {
+    private:
+        // Use long long to prevent overflow during the 2*val - mini calculation
+        stack<long long> st;
+        long long mini;
 
-    if(st.empty()){
-        st.push({value , value}) ;
+    public:
+        MinStack() {}
 
-        return ; 
-    }
+        void push(int val) {
+            long long value = val;
+            if (st.empty()) {
+                st.push(value);
+                mini = value;
+            } else {
+                if (value >= mini) {
+                    st.push(value);
+                } else {
+                    // Encoding the new minimum
+                    st.push(2 * value - mini);
+                    mini = value;
+                }
+            }
+        }
 
-    int mini = min(getMin() , value ) ;
+        void pop() {
+            if (st.empty()) return;
 
-    st.push({value , mini}) ;
+            long long x = st.top();
+            st.pop();
 
-    }
-    
-    void pop() {
-        st.pop() ;
-    }
-    
-    int top() {
-        return st.top().first ;
-    }
-    
-    int getMin() {
-        return st.top().second ; 
-    }
+            // If x < mini, it means x was an encoded value
+            // We must retrieve the previous minimum
+            if (x < mini) {
+                mini = 2 * mini - x;
+            }
+        }
+
+        int top() {
+            if (st.empty()) return -1;
+            long long x = st.top();
+            
+            // If top is less than mini, mini IS the actual value
+            if (x < mini) return (int)mini;
+            return (int)x;
+        }
+
+        int getMin() {
+            return (int)mini;
+        }
 };
-
-/**
- * Your MinStack object will be instantiated and called as such:
- * MinStack* obj = new MinStack();
- * obj->push(val);
- * obj->pop();
- * int param_3 = obj->top();
- * int param_4 = obj->getMin();
- */
