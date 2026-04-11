@@ -2,8 +2,8 @@ class Solution {
 public:
     int minimumDistance(vector<int>& nums) {
         int n = nums.size();
-        std::vector<int> next(n, -1);
-        std::unordered_map<int, int> occur;
+        vector<int> next(n, -1);
+        unordered_map<int, int> occur;
         int ans = n + 1;
 
         for (int i = n - 1; i >= 0; i--) {
