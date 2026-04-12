@@ -1,57 +1,52 @@
 class Solution {
 public:
-    int dp[301][7][7][7][7];
-
-    pair<int, int> getCoordinate(char ch) {
-        int pos = ch - 'A';
-        return {pos / 6, pos % 6};
+    int dp[301][27][27];
+    pair<int, int> getCoord(int pos) {
+        return {pos/6, pos%6};
     }
 
-    int getDistance(int x1, int y1, int x2, int y2) {
-        return abs(x1 - x2) + abs(y1 - y2);
+    int getDistance(int pos1, int pos2) {
+        auto[x1, y1] = getCoord(pos1);
+        auto[x2, y2] = getCoord(pos2);
+        return abs(x1 - x2) + abs(y1-y2);
     }
 
-    int solve(string& word, int i, int x1, int y1, int x2, int y2) {
-        if (i == word.size())
+    int solve(string &word, int i, int f1, int f2) {
+        if(i >= word.length())
             return 0;
+        
+        int curr = word[i] - 'A';
 
-        if (dp[i][x1 + 1][y1 + 1][x2 + 1][y2 + 1] != -1)
-            return dp[i][x1 + 1][y1 + 1][x2 + 1][y2 + 1];
-
-        auto [x, y] = getCoordinate(word[i]);
-
-        // Case 1: first finger not used
-        if (x1 == -1 && y1 == -1 && x2 == -1 && y2 == -1) {
-            // using finger 1
-            return dp[i][x1 + 1][y1 + 1][x2 + 1][y2 + 1] =
-                       solve(word, i + 1, x, y, x2,
-                             y2); // Choose any finger (1 or 2), both symmetric
+        if(dp[i][f1][f2] != -1) {
+            return dp[i][f1][f2];
         }
 
-        // Case 2: second finger not used
-        if (x2 == -1 && y2 == -1) {
-            int moveF2 = solve(word, i + 1, x1, y1, x, y);
-
-            int moveF1 =
-                solve(word, i + 1, x, y, x2, y2) + getDistance(x1, y1, x, y);
-
-            return dp[i][x1 + 1][y1 + 1][x2 + 1][y2 + 1] = min(moveF1, moveF2);
+        //non used
+        if(f1 == 26 && f2 == 26) {
+            return dp[i][f1][f2] = solve(word, i+1, curr, f2);
         }
 
-        // Case 3: both fingers used
-        int moveF1 =
-            solve(word, i + 1, x, y, x2, y2) + getDistance(x1, y1, x, y);
+        //f2 not used
+        if(f2 == 26) {
+            int moveF2 = solve(word, i+1, f1, curr);
+            int moveF1 = getDistance(f1, curr) + solve(word, i+1, curr, f2);
 
-        int moveF2 =
-            solve(word, i + 1, x1, y1, x, y) + getDistance(x2, y2, x, y);
+            return dp[i][f1][f2] = min(moveF1, moveF2);
+        }
 
-        return dp[i][x1 + 1][y1 + 1][x2 + 1][y2 + 1] = min(moveF1, moveF2);
+        //both used
+        int moveF1 = getDistance(f1, curr) + solve(word, i+1, curr, f2);
+
+
+        int moveF2 = getDistance(f2, curr) + solve(word, i+1, f1, curr);
+
+        return dp[i][f1][f2] = min(moveF1, moveF2);
     }
-
     int minimumDistance(string word) {
-        // finger1 = (x1, y1)
-        // finger2 = (x2, y2)
+        //finger1 = value of character
+        //finger2 = value of character
         memset(dp, -1, sizeof(dp));
-        return solve(word, 0, -1, -1, -1, -1);
+        return solve(word, 0, 26, 26);
     }
 };
+
