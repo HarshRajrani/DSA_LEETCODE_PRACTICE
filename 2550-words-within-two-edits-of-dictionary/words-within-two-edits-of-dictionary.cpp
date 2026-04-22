@@ -8,7 +8,7 @@ public:
 
             for (string d : dictionary) {
 
-               // if (q.size() != d.size()) continue;
+                if (q.size() != d.size()) continue;
 
                 int diff = 0;
 
