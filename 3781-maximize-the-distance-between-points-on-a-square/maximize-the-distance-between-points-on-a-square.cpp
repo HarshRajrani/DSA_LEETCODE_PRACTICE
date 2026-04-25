@@ -11,14 +11,11 @@ public:
 
             if (y == 0) {
                 pos.push_back(x); // bottom
-            }
-            else if (x == side) {
+            } else if (x == side) {
                 pos.push_back(1LL * side + y); // right
-            }
-            else if (y == side) {
+            } else if (y == side) {
                 pos.push_back(3LL * side - x); // top
-            }
-            else {
+            } else {
                 pos.push_back(4LL * side - y); // left
             }
         }
@@ -49,8 +46,8 @@ public:
         return (int)ans;
     }
 
-    bool canPick(vector<long long>& arr, vector<long long>& base,
-                 int k, long long dist, long long perimeter) {
+    bool canPick(vector<long long>& arr, vector<long long>& base, int k,
+                 long long dist, long long perimeter) {
         int n = base.size();
 
         for (int start = 0; start < n; start++) {
@@ -62,11 +59,8 @@ public:
             while (count < k) {
                 long long target = last + dist;
 
-                auto it = lower_bound(
-                    arr.begin() + idx + 1,
-                    arr.begin() + start + n,
-                    target
-                );
+                auto it = lower_bound(arr.begin() + idx + 1,
+                                      arr.begin() + start + n, target);
 
                 if (it == arr.begin() + start + n) {
                     break;
