@@ -4,7 +4,8 @@ public:
 
         int n = grid.size();
         int m = grid[0].size();
-        if (m == 1) return 0;
+        if (m == 1)
+            return 0;
 
         // prefix sum for each column
         vector<vector<long long>> col(m, vector<long long>(n + 1, 0));
@@ -29,19 +30,14 @@ public:
                     if (curr <= prev) {
                         long long gain = col[c][prev] - col[c][curr];
 
-                        newdp[curr][prev] = max(
-                            newdp[curr][prev],
-                            suffMax[prev][0] + gain
-                        );
-                    }
-                    else {
-                        long long gain = col[c-1][curr] - col[c-1][prev];
+                        newdp[curr][prev] =
+                            max(newdp[curr][prev], suffMax[prev][0] + gain);
+                    } else {
+                        long long gain = col[c - 1][curr] - col[c - 1][prev];
 
-                        newdp[curr][prev] = max({
-                            newdp[curr][prev],
-                            suffMax[prev][curr],
-                            prefMax[prev][curr] + gain
-                        });
+                        newdp[curr][prev] =
+                            max({newdp[curr][prev], suffMax[prev][curr],
+                                 prefMax[prev][curr] + gain});
                     }
                 }
             }
@@ -57,19 +53,15 @@ public:
                     if (prev > curr)
                         penalty = col[c][prev] - col[c][curr];
 
-                    prefMax[curr][prev] = max(
-                        prefMax[curr][prev-1],
-                        newdp[curr][prev] - penalty
-                    );
+                    prefMax[curr][prev] = max(prefMax[curr][prev - 1],
+                                              newdp[curr][prev] - penalty);
                 }
 
                 suffMax[curr][n] = newdp[curr][n];
 
-                for (int prev = n-1; prev >= 0; prev--) {
-                    suffMax[curr][prev] = max(
-                        suffMax[curr][prev+1],
-                        newdp[curr][prev]
-                    );
+                for (int prev = n - 1; prev >= 0; prev--) {
+                    suffMax[curr][prev] =
+                        max(suffMax[curr][prev + 1], newdp[curr][prev]);
                 }
             }
 
