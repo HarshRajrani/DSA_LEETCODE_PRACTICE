@@ -11,8 +11,7 @@ public:
             for (int j = n - 1; j >= 0; j--) {
                 if (boxGrid[i][j] == '*') {
                     empty = j - 1;
-                } 
-                else if (boxGrid[i][j] == '#') {
+                } else if (boxGrid[i][j] == '#') {
                     swap(boxGrid[i][j], boxGrid[i][empty]);
                     empty--;
                 }
