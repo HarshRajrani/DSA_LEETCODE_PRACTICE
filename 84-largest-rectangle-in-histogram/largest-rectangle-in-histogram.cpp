@@ -28,9 +28,6 @@ public:
             int area = heights[idx]  * width;
             max_area = max( area, max_area);
         }
-        
-        
-        
         return max_area;
     }
 };
