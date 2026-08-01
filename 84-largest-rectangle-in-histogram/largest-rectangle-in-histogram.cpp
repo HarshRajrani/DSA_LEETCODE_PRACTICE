@@ -1,52 +1,36 @@
 class Solution {
 public:
-    void previousSmaller(vector<int>& ps, vector<int>& h) {
-        stack<int> s;
-        int n = h.size();
-        for (int i = 0; i < n; ++i) {
-            while (!s.empty() and h[i] <= h[s.top()])
-                s.pop();
+    int largestRectangleArea(vector<int>& heights) {
+        int max_area=0;
+        int n = heights.size();
+        stack<int>st;
+        for ( int i=0; i<n;i++){
+        while( !st.empty() && heights[st.top()]>=heights[i]){
+            int idx = st.top();
+            st.pop();
+        
+           int nse= i; // shuru mai
+           int pse = st.empty()? -1: st.top();
+           int width = nse-pse -1;
+           int area = heights[idx] * width;
+           max_area = max(area, max_area);
 
-            if (s.empty())
-                ps[i] = -1;
-            else
-                ps[i] = s.top();
-
-            s.push(i);
         }
-    }
-
-    void nextSmaller(vector<int>& ns, vector<int>& h) {
-        stack<int> s;
-        int n = h.size();
-        ns[n - 1] = n;
-        s.push(n - 1);
-        for (int i = n - 2; i >= 0; --i) {
-            while (!s.empty() and h[i] <= h[s.top()])
-                s.pop();
-
-            if (s.empty())
-                ns[i] = n;
-            else
-                ns[i] = s.top();
-
-            s.push(i);
+        st.push(i);
+        
         }
-    }
-
-    int largestRectangleArea(vector<int>& h) {
-        int n = h.size();
-        vector<int> ps(n), ns(n);
-        previousSmaller(ps, h);
-        nextSmaller(ns, h);
-        int ans = 0;
-        for (int i = 0; i < n; ++i) {
-            int len = ns[i] - ps[i] - 1;
-            int area = len * h[i];
-
-            ans = max(ans, area);
+        while( !st.empty()){
+            int idx = st.top();
+            st.pop();
+            int nse =n; // last mai
+            int pse = st.empty() ?-1: st.top();
+            int width = nse - pse-1;
+            int area = heights[idx]  * width;
+            max_area = max( area, max_area);
         }
-
-        return ans;
+        
+        
+        
+        return max_area;
     }
 };
