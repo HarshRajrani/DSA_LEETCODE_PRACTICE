@@ -1,47 +1,42 @@
 class Solution {
 public:
-    int dp[201][20001];
 
-    bool solve(vector<int>& nums, int i, int x) {
+    bool solve(vector<int>& nums, int idx, int target,
+               vector<vector<int>>& dp) {
 
-        //   base case
-
-        if (x == 0)
+        if (target == 0)
             return true;
 
-        if (i >= nums.size())
-            return false;
+        if (idx == 0)
+            return nums[0] == target;
 
-        if (dp[i][x] != -1)
-            return dp[i][x];
+        if (dp[idx][target] != -1)
+            return dp[idx][target];
+
+        bool not_take = solve(nums, idx - 1, target, dp);
 
         bool take = false;
+        if (nums[idx] <= target)
+            take = solve(nums, idx - 1, target - nums[idx], dp);
 
-        if (x >= nums[i]) {
-
-            take = solve(nums, i + 1, x - nums[i]);
-        }
-
-        bool notTake = false;
-
-        notTake = solve(nums, i + 1, x);
-
-        return dp[i][x] = take || notTake;
+        return dp[idx][target] = take || not_take;
     }
+
     bool canPartition(vector<int>& nums) {
 
         int n = nums.size();
 
-        int s = accumulate(nums.begin(), nums.end(), 0);
+        int sum = 0;
+        for (int x : nums)
+            sum += x;
 
-        if (s % 2)
+        if (sum % 2)
             return false;
 
-        int x = s / 2;
+        int target = sum / 2;
 
-        memset(dp, -1, sizeof(dp));
-        // vector<vector<int>> dp(n+1 ,  vector<int>(x+1 , -1)) ;
+        vector<vector<int>> dp(n, vector<int>(target + 1, -1));
 
-        return solve(nums, 0, x);
+        return solve(nums, n - 1, target, dp);
     }
 };
