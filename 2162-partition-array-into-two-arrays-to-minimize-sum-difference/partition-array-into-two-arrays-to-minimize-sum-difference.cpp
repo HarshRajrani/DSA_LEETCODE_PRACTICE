@@ -1,61 +1,74 @@
-
 class Solution {
 public:
+
+    void generate(vector<int>& nums, int idx, int end,
+                  int cnt, int sum,
+                  vector<vector<int>>& v) {
+
+        if (idx == end) {
+            v[cnt].push_back(sum);
+            return;
+        }
+
+        // Don't take
+        generate(nums, idx + 1, end, cnt, sum, v);
+
+        // Take
+        generate(nums, idx + 1, end, cnt + 1, sum + nums[idx], v);
+    }
+
     int minimumDifference(vector<int>& nums) {
-        int n = nums.size() / 2;
 
-        vector<int> left(nums.begin(), nums.begin() + n);
-        vector<int> right(nums.begin() + n, nums.end());
+        int n = nums.size();
+        int total = 0;
 
-        // L[k] = all sums using k elements from left
-        // R[k] = all sums using k elements from right
-        vector<vector<int>> L(n + 1), R(n + 1);
+        for (int x : nums)
+            total += x;
 
-        // Generate all subset sums
-        for (int mask = 0; mask < (1 << n); mask++) {
-            int cnt = 0, sumL = 0, sumR = 0;
+        int half = n / 2;
 
-            for (int i = 0; i < n; i++) {
-                if (mask & (1 << i)) {
-                    cnt++;
-                    sumL += left[i];
-                    sumR += right[i];
-                }
-            }
+        vector<vector<int>> left(half + 1);
+        vector<vector<int>> right(half + 1);
 
-            L[cnt].push_back(sumL);
-            R[cnt].push_back(sumR);
-        }
+        int mid = n / 2;
 
-        // Sort right side for binary search
-        for (int i = 0; i <= n; i++) {
-            sort(R[i].begin(), R[i].end());
-        }
+        generate(nums, 0, mid, 0, 0, left);
+        generate(nums, mid, n, 0, 0, right);
 
-        int total = accumulate(nums.begin(), nums.end(), 0);
+        for (auto& v : right)
+            sort(v.begin(), v.end());
+
         int ans = INT_MAX;
 
-        // Try all splits
-        for (int k = 0; k <= n; k++) {
-            for (int a : L[k]) {
+        // Take i elements from left
+        // Then take half-i elements from right
+        for (int i = 0; i <= half; i++) {
 
-                // target we want from right side
-                int target = total / 2 - a;
+            int need = half - i;
 
-                auto& vec = R[n - k];
+            for (int x : left[i]) {
 
-                // binary search
-                auto it = lower_bound(vec.begin(), vec.end(), target);
+                // We want:
+                // x + y ≈ total / 2
+                //
+                // y ≈ total/2 - x
 
-                if (it != vec.end()) {
-                    int sum = a + *it;
-                    ans = min(ans, abs(total - 2 * sum));
+                int target = total / 2 - x;
+
+                auto& v = right[need];
+
+                auto it = lower_bound(v.begin(), v.end(), target);
+
+                if (it != v.end()) {
+                    int selectedSum = x + *it;
+                    ans = min(ans, abs(total - 2 * selectedSum));
                 }
 
-                if (it != vec.begin()) {
+                if (it != v.begin()) {
                     --it;
-                    int sum = a + *it;
-                    ans = min(ans, abs(total - 2 * sum));
+
+                    int selectedSum = x + *it;
+                    ans = min(ans, abs(total - 2 * selectedSum));
                 }
             }
         }
