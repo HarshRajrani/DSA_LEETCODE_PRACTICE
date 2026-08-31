@@ -1,96 +1,53 @@
 class Solution {
 public:
-
-    int solve(vector<int>& nums, int curr_idx, int prev_idx,
-              int n, vector<vector<int>>& dp) {
-
-        // Base case
-        if (curr_idx >= n)
-            return 0;
-
-        // Memoization
-        if (dp[curr_idx][prev_idx + 1] != -1)
-            return dp[curr_idx][prev_idx + 1];
-
-        int take = 0;
-
-        // Take current element
-        if (prev_idx == -1 ||
-            nums[curr_idx] % nums[prev_idx] == 0) {
-
-            take = 1 + solve(
-                nums,
-                curr_idx + 1,
-                curr_idx,
-                n,
-                dp
-            );
-        }
-
-        // Skip current element
-        int skip = solve(
-            nums,
-            curr_idx + 1,
-            prev_idx,
-            n,
-            dp
-        );
-
-        return dp[curr_idx][prev_idx + 1] =
-            max(take, skip);
-    }
-
-
-    vector<int> largestDivisibleSubset(vector<int>& nums) {
-
-        int n = nums.size();
+   vector<int> largestDivisibleSubset(vector<int>& nums) {
+        int n = nums.size(); // Size of the array 
 
         sort(nums.begin(), nums.end());
 
-        vector<vector<int>> dp(
-            n,
-            vector<int>(n + 1, -1)
-        );
+        vector<int> ans; // To store the LDS
+        vector<int> dp(n, 1); // DP array 
+        vector<int> parent(n); // Array to keep record of the parent
 
-        // Calculate the maximum length
-        solve(nums, 0, -1, n, dp);
+        // To store the index of last element in the LDS
+        int lastIndex = 0; 
 
-        // Reconstruction
-        vector<int> ans;
+        // To store the length of LDS
+        int maxLen = 0;
 
-        int curr_idx = 0;
-        int prev_idx = -1;
+        // Computing the DP array 
+        for(int i = 0; i < n; i++) {
+            parent[i] = i; // Assign the parent to itself
 
-        while (curr_idx < n) {
+            // For each previous index
+            for(int prevInd = 0; prevInd < i; prevInd++) {
+                
+                // If the element at index i can be included in the LDS ending at index j
+                if(nums[i] % nums[prevInd] == 0 && dp[i] < dp[prevInd] + 1) {
 
-            bool canTake =
-                (prev_idx == -1 ||
-                 nums[curr_idx] % nums[prev_idx] == 0);
-
-            if (canTake) {
-
-                int take = 1;
-
-                if (curr_idx + 1 < n) {
-                    take += dp[curr_idx + 1][curr_idx + 1];
-                }
-
-                int skip = 0;
-
-                if (curr_idx + 1 < n) {
-                    skip = dp[curr_idx + 1][prev_idx + 1];
-                }
-
-                // If taking gives optimal answer
-                if (take >= skip) {
-                    ans.push_back(nums[curr_idx]);
-                    prev_idx = curr_idx;
+                    dp[i] = dp[prevInd] + 1; // Update the DP value
+                    parent[i] = prevInd; // Store the parent
                 }
             }
 
-            curr_idx++;
+            // If a longer LDS is found, update the values
+            if(dp[i] > maxLen) {
+                lastIndex = i;
+                maxLen = dp[i];
+            }
         }
 
+        // Backtracking
+        int i = lastIndex;
+
+        // Until we reach an index which is its own parent
+        while(parent[i] != i) {
+            ans.push_back(nums[i]); // Add the element at current index
+            i = parent[i]; 
+        }
+        ans.push_back(nums[i]); // Adding the last element 
+
+        // Return the computed result
         return ans;
-    }
+    }  
 };
