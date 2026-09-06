@@ -1,50 +1,43 @@
 class Solution {
 public:
-    int solve(string& s, string& t, int i, int j, vector<vector<int>>& dp) {
-
-        // base case
-
-        if (j < 0)
-            return 1;
-
-        if (i < 0)
-            return 0;
-
-        // already calculated
-
-        if (dp[i][j] != -1)
-            return dp[i][j];
-
-        // recurrence case
-
-        int taken = 0;
-        int skip = 0;
-
-        // characters same
-
-        if (s[i] == t[j]) {
-
-            taken = solve(s, t, i - 1, j - 1, dp);
-
-            skip = solve(s, t, i - 1, j, dp);
-
-            return dp[i][j] = taken + skip;
-        }
-
-        // characters different
-
-        skip = solve(s, t, i - 1, j, dp);
-
-        return dp[i][j] = skip;
-    }
 
     int numDistinct(string s, string t) {
 
         int n = s.size();
         int m = t.size();
 
-        vector<vector<int>> dp(n, vector<int>(m, -1));
+        vector<vector<unsigned long long>> dp(
+            n + 1,
+            vector<unsigned long long>(m + 1, 0)
+        );
 
-        return solve(s, t, n - 1, m - 1, dp);
+        // target empty hai
+        for(int i = 0; i <= n; i++) {
+            dp[i][0] = 1;
+        }
+
+        // fill DP table
+        for(int i = 1; i <= n; i++) {
+
+            for(int j = 1; j <= m; j++) {
+
+                if(s[i - 1] == t[j - 1]) {
+
+                    // take + skip
+                    dp[i][j] =
+                        dp[i - 1][j - 1] +
+                        dp[i - 1][j];
+                }
+
+                else {
+
+                    // only skip
+                    dp[i][j] =
+                        dp[i - 1][j];
+                }
+            }
+        }
+
+        return dp[n][m];
     }
 };
