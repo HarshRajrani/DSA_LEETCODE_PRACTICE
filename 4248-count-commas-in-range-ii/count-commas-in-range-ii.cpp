@@ -8,9 +8,7 @@ public:
         long long answer = 0;
 
         while (start <= n) {
-            long long end = (start > n / 1000)
-                ? n
-                : start * 1000 - 1;
+            long long end = (start > n / 1000) ? n : start * 1000 - 1;
 
             long long count = end - start + 1;
 
