@@ -1,27 +1,33 @@
+
 class Solution {
 public:
     int countSubstrings(string s) {
-        
-        int n = s.length() ; 
-        int count = 0 ; 
 
-        for(int i = 0 ; i < n ; i++ ){
-            count += expands(s , i , i) ;
-            count += expands(s, i, i+1) ;
+        int n = s.size();
+        int count = 0;
 
+        for (int i = 0; i < n; i++) {
+
+            // Odd length palindrome
+            int l = i, r = i;
+
+            while (l >= 0 && r < n && s[l] == s[r]) {
+                count++;
+                l--;
+                r++;
+            }
+
+            // Even length palindrome
+            l = i;
+            r = i + 1;
+
+            while (l >= 0 && r < n && s[l] == s[r]) {
+                count++;
+                l--;
+                r++;
+            }
         }
-        return count ; 
-    }
 
-    int expands(string &s , int left , int right){
-
-        int count = 0 ;
-
-        while(left >= 0 && right<s.length() && s[left] == s[right]){
-            count++ ;
-            left-- ;
-            right++ ;
-        }
-        return count ; 
+        return count;
     }
 };
